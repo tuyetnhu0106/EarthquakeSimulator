@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điều khiển Robot - Hệ thống tìm kiếm người sống sót</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .header {
+            background-color: #1a237e;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #c5cae9;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1a237e;
+        }
+        
+        .app-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background-color: #c5cae9;
+            border-radius: 50%;
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1a237e;
+        }
+        
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 220px;
+            background-color: #283593;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .menu-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .menu-item.active {
+            background-color: #3949ab;
+            border-left: 4px solid #c5cae9;
+        }
+        
+        .menu-item:hover {
+            background-color: #3949ab;
+        }
+        
+        .menu-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .robot-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .robot-option {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 140px;
+        }
+        
+        .robot-option.selected {
+            background-color: #3f51b5;
+            color: white;
+        }
+        
+        .robot-option:hover:not(.selected) {
+            background-color: #e8eaf6;
+        }
+        
+        .robot-option-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #c5cae9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+            color: #1a237e;
+        }
+        
+        .robot-option.selected .robot-option-icon {
+            background-color: white;
+        }
+        
+        .robot-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: auto;
+        }
+        
+        .status-active {
+            background-color: #4caf50;
+        }
+        
+        .status-warning {
+            background-color: #ff9800;
+        }
+        
+        .status-error {
+            background-color: #f44336;
+        }
+        
+        .status-inactive {
+            background-color: #9e9e9e;
+        }
+        
+        .control-dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 20px;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #1a237e;
+        }
+        
+        .camera-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            grid-row: span 2;
+        }
+        
+        .camera-feed {
+            flex: 1;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            margin-top: 10px;
+        }
+        
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+            z-index: 2;
+        }
+        
+        .camera-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .camera-info {
+            background-color: rgba(0,0,0,0.5);
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        
+        .sensor-indicators {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .sensor-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .thermal-active {
+            background-color: #ff5722;
+            box-shadow: 0 0 5px #ff5722;
+        }
+        
+        .audio-active {
+            background-color: #ffc107;
+            box-shadow: 0 0 5px #ffc107;
+        }
+        
+        .position-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .map-container {
+            flex: 1;
+            background-color: #e8eaf6;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .map-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: 30px 30px;
+            background-image:
+                linear-gradient(to right, #d1d4e9 1px, transparent 1px),
+                linear-gradient(to bottom, #d1d4e9 1px, transparent 1px);
+        }
+        
+        .robot-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #3f51b5;
+            border: 2px solid white;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            box-shadow: 0 0 5px rgba(0,0,0,0.3);
+        }
+        
+        .robot-marker.selected {
+            background-color: #f44336;
+            box-shadow: 0 0 8px rgba(244, 67, 54, 0.6);
+            animation: pulse 2s infinite;
+        }
+        
+        .robot-marker.robot-1 {
+            top: 40%;
+            left: 30%;
+        }
+        
+        .robot-marker.robot-2 {
+            top: 60%;
+            left: 50%;
+        }
+        
+        .robot-marker.robot-3 {
+            top: 25%;
+            left: 70%;
+        }
+        
+        .robot-marker.robot-4 {
+            top: 75%;
+            left: 20%;
+        }
+        
+        .robot-direction {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 8px solid #3f51b5;
+            transform: translate(-50%, -50%) rotate(45deg);
+            top: 37%;
+            left: 33%;
+            z-index: 3;
+        }
+        
+        .obstacle {
+            position: absolute;
+            background-color: rgba(158, 158, 158, 0.5);
+            border-radius: 4px;
+        }
+        
+        .obstacle-1 {
+            top: 20%;
+            left: 40%;
+            width: 100px;
+            height: 70px;
+        }
+        
+        .obstacle-2 {
+            top: 50%;
+            left: 60%;
+            width: 80px;
+            height: 60px;
+        }
+        
+        .obstacle-3 {
+            top: 70%;
+            left: 30%;
+            width: 120px;
+            height: 50px;
+        }
+        
+        .map-controls {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .map-control-btn {
+            width: 30px;
+            height: 30px;
+            background-color: white;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .map-control-btn:hover {
+            background-color: #e8eaf6;
+        }
+        
+        .control-panel-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+        }
+        
+        .movement-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+            width: 100%;
+            height: 150px;
+            margin: 15px 0;
+        }
+        
+        .movement-btn {
+            background-color: #e8eaf6;
+            border: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .movement-btn:hover {
+            background-color: #c5cae9;
+        }
+        
+        .movement-btn.up {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        
+        .movement-btn.left {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        
+        .movement-btn.stop {
+            grid-column: 2;
+            grid-row: 2;
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .movement-btn.stop:hover {
+            background-color: #d32f2f;
+        }
+        
+        .movement-btn.right {
+            grid-column: 3;
+            grid-row: 2;
+        }
+        
+        .movement-btn.down {
+            grid-column: 2;
+            grid-row: 3;
+        }
+        
+        .speed-control {
+            display: flex;
+            flex-direction: column;
+            margin: 20px 0;
+        }
+        
+        .speed-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .speed-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e0e0e0;
+            outline: none;
+        }
+        
+        .speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #3f51b5;
+            cursor: pointer;
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            background-color: #3f51b5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .action-btn:hover {
+            background-color: #283593;
+        }
+        
+        .action-btn.secondary {
+            background-color: #78909c;
+        }
+        
+        .action-btn.secondary:hover {
+            background-color: #546e7a;
+        }
+        
+        .sensor-toggle-section {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .sensor-toggle {
+            flex: 1;
+            background-color: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .sensor-toggle.active {
+            background-color: #3f51b5;
+            color: white;
+            border-color: #3f51b5;
+        }
+        
+        .emergency-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .emergency-btn:hover {
+            background-color: #d32f2f;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(244, 67, 54, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">R</div>
+            <div class="app-name">ROBOT FINDER - HỆ THỐNG TÌM KIẾM NGƯỜI SỐNG SÓT</div>
+        </div>
+        <div class="user-info">
+            <span>Admin</span>
+            <div class="user-avatar">A</div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <nav class="sidebar">
+            <a class="menu-item" href="./index.html">
+                <div class="menu-icon">1</div>
+                <span>Bảng điều khiển</span>
+            </a>
+            <a class="menu-item active" href="./robots.html">
+                <div class="menu-icon">2</div>
+                <span>Quản lý robot</span>
+            </a>
+    </nav>
+        
+        <main class="content">
+            <h2>Điều khiển Robot</h2>
+            
+            <div class="robot-selector">
+                <div class="robot-option selected">
+                    <div class="robot-option-icon">R1</div>
+                    <div>Robot #1</div>
+                    <div class="robot-status-dot status-active"></div>
+                </div>
+                
+                <div class="robot-option">
+                    <div class="robot-option-icon">R2</div>
+                    <div>Robot #2</div>
+                    <div class="robot-status-dot status-warning"></div>
+                </div>
+                
+                <div class="robot-option">
+                    <div class="robot-option-icon">R3</div>
+                    <div>Robot #3</div>
+                    <div class="robot-status-dot status-error"></div>
+                </div>
+                
+                <div class="robot-option">
+                    <div class="robot-option-icon">R4</div>
+                    <div>Robot #4</div>
+                    <div class="robot-status-dot status-inactive"></div>
+                </div>
+            </div>
+            
+            <div class="control-dashboard">
+                <section class="camera-section">
+                    <div class="section-title">Camera trực tiếp</div>
+                    <div class="camera-feed">
+                        <img src="./img1.JPG" alt="Camera feed" style="width: 100%; height: 100%; object-fit: cover;"/>
+                        
+                        <div class="camera-overlay">
+                            <div class="camera-details">
+                                <div class="camera-info">
+                                    <div>Robot #1 - Camera</div>
+                                    <div>1080p • 30fps</div>
+                                </div>
+                                <div class="sensor-indicators">
+                                    <div class="sensor-indicator thermal-active" title="Cảm biến nhiệt đang hoạt động"></div>
+                                    <div class="sensor-indicator audio-active" title="Thu âm đang hoạt động"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="camera-info">
+                                <div>Tọa độ: X:30%, Y:40%</div>
+                                <div>Thời gian: 09:45:22</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="position-section">
+                    <div class="section-title">Vị trí hiện tại</div>
+                    <div class="map-container">
+                        <div class="map-grid"></div>
+                        
+                        <!-- Obstacles/Debris -->
+                        <div class="obstacle obstacle-1"></div>
+                        <div class="obstacle obstacle-2"></div>
+                        <div class="obstacle obstacle-3"></div>
+                        
+                        <!-- Robot markers -->
+                        <div class="robot-marker robot-1 selected"></div>
+                        <div class="robot-marker robot-2"></div>
+                        <div class="robot-marker robot-3"></div>
+                        <div class="robot-marker robot-4"></div>
+                        
+                        <!-- Direction indicator for selected robot -->
+                        <div class="robot-direction"></div>
+                        
+                        <!-- Map controls -->
+                        <div class="map-controls">
+                            <div class="map-control-btn">+</div>
+                            <div class="map-control-btn">-</div>
+                            <div class="map-control-btn">⟳</div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="control-panel-section">
+                    <div class="section-title">Điều khiển di chuyển</div>
+                    
+                    <div class="movement-controls">
+                        <button class="movement-btn up">▲</button>
+                        <button class="movement-btn left">◄</button>
+                        <button class="movement-btn stop">■</button>
+                        <button class="movement-btn right">►</button>
+                        <button class="movement-btn down">▼</button>
+                    </div>
+                    
+                    <div class="speed-control">
+                        <div class="speed-label">
+                            <span>Tốc độ:</span>
+                            <span>50%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" class="speed-slider">
+                    </div>
+                    
+                    <div class="sensor-toggle-section">
+                        <div class="sensor-toggle active">Camera</div>
+                        <div class="sensor-toggle active">Thu âm</div>
+                        <div class="sensor-toggle active">Nhiệt</div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="action-btn">Tự động tìm kiếm</button>
+                        <button class="action-btn secondary">Quay về điểm xuất phát</button>
+                    </div>
+                    
+                    <button class="emergency-btn">DỪNG KHẨN CẤP</button>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

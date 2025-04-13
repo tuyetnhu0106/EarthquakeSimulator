@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ứng dụng giám sát robot tìm kiếm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background-color: #1a237e;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #c5cae9;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1a237e;
+        }
+        
+        .app-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background-color: #c5cae9;
+            border-radius: 50%;
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1a237e;
+        }
+        
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 220px;
+            background-color: #283593;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .menu-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .menu-item.active {
+            background-color: #3949ab;
+            border-left: 4px solid #c5cae9;
+        }
+        
+        .menu-item:hover {
+            background-color: #3949ab;
+        }
+        
+        .menu-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #1a237e;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        
+        .map-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+            grid-row: span 2;
+            height: calc(100vh - 170px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .map-container {
+            flex: 1;
+            background-color: #e8eaf6;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .map-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: 30px 30px;
+            background-image:
+                linear-gradient(to right, #d1d4e9 1px, transparent 1px),
+                linear-gradient(to bottom, #d1d4e9 1px, transparent 1px);
+        }
+        
+        .robot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #3f51b5;
+            border: 2px solid white;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+        
+        .robot.active {
+            background-color: #f44336;
+        }
+        
+        .robot-1 {
+            top: 30%;
+            left: 40%;
+        }
+        
+        .robot-2 {
+            top: 50%;
+            left: 60%;
+        }
+        
+        .robot-3 {
+            top: 70%;
+            left: 35%;
+        }
+        
+        .robot-4 {
+            top: 45%;
+            left: 75%;
+        }
+        
+        .robot-info {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 6px;
+            padding: 10px;
+            width: 180px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 3;
+        }
+        
+        .debris {
+            position: absolute;
+            background-color: rgba(158, 158, 158, 0.5);
+            border-radius: 4px;
+        }
+        
+        .debris-1 {
+            top: 20%;
+            left: 30%;
+            width: 100px;
+            height: 70px;
+        }
+        
+        .debris-2 {
+            top: 40%;
+            left: 55%;
+            width: 120px;
+            height: 90px;
+        }
+        
+        .debris-3 {
+            top: 65%;
+            left: 25%;
+            width: 140px;
+            height: 60px;
+        }
+        
+        .sensor-data {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+        }
+        
+        .sensor-tabs {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 15px;
+        }
+        
+        .sensor-tab {
+            padding: 8px 15px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-right: 10px;
+            font-weight: 500;
+        }
+        
+        .sensor-tab.active {
+            border-bottom-color: #3f51b5;
+            color: #3f51b5;
+        }
+        
+        .camera-view {
+            background-color: #e0e0e0;
+            border-radius: 6px;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #757575;
+            position: relative;
+        }
+        
+        .audio-container {
+            background-color: #f5f5f5;
+            border-radius: 6px;
+            padding: 10px;
+            height: 180px;
+        }
+        
+        .sound-wave {
+            height: 60px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background-image: linear-gradient(90deg, 
+                #3f51b5 1px, transparent 1px,
+                #3f51b5 3px, transparent 3px,
+                #3f51b5 5px, transparent 5px,
+                #3f51b5 8px, transparent 8px,
+                #3f51b5 13px, transparent 13px,
+                #3f51b5 21px, transparent 21px);
+            background-size: 100px 100%;
+            background-repeat: repeat-x;
+            animation: soundWave 3s infinite linear;
+        }
+        
+        @keyframes soundWave {
+            0% { background-position: 0 0; }
+            100% { background-position: 100px 0; }
+        }
+        
+        .thermal-view {
+            background: linear-gradient(45deg, #1a237e, #3f51b5, #7986cb, #c5cae9, #f44336, #ff9e80);
+            border-radius: 6px;
+            height: 180px;
+            position: relative;
+        }
+        
+        .alert-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+        }
+        
+        .alerts-list {
+            margin-top: 10px;
+        }
+        
+        .alert-item {
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert-critical {
+            background-color: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+        
+        .alert-warning {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .alert-info {
+            background-color: #e8eaf6;
+            border-left: 4px solid #3f51b5;
+        }
+        
+        .alert-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .alert-critical .alert-icon {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .alert-warning .alert-icon {
+            background-color: #ffc107;
+            color: #333;
+        }
+        
+        .alert-info .alert-icon {
+            background-color: #3f51b5;
+            color: white;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .control-btn {
+            background-color: #3f51b5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .control-btn:hover {
+            background-color: #283593;
+        }
+        
+        .victim-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #f44336;
+            border: 2px solid white;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 60%;
+            animation: pulse 2s infinite;
+            z-index: 1;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(244, 67, 54, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0); }
+        }
+        
+        .color-scale {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            width: 20px;
+            height: 150px;
+            background: linear-gradient(to bottom, #f44336, #ff9e80, #ffeb3b, #7986cb, #3f51b5, #1a237e);
+            border-radius: 3px;
+        }
+        
+        .scale-label {
+            position: absolute;
+            right: 40px;
+            font-size: 10px;
+            color: white;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.7);
+        }
+        
+        .scale-label.high {
+            top: 15px;
+        }
+        
+        .scale-label.low {
+            bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">R</div>
+            <div class="app-name">ROBOT FINDER - HỆ THỐNG TÌM KIẾM NGƯỜI SỐNG SÓT</div>
+        </div>
+        <div class="user-info">
+            <span>Admin</span>
+            <div class="user-avatar">A</div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <nav class="sidebar">
+                <a class="menu-item active">
+                    <div class="menu-icon">1</div>
+                    <span>Bảng điều khiển</span>
+                </a>
+                <a class="menu-item" href="./robots.html">
+                    <div class="menu-icon">2</div>
+                    <span>Quản lý robot</span>
+                </a>
+        </nav>
+        
+        <main class="content">
+            <h2>Bảng điều khiển</h2>
+            
+            <div class="dashboard">
+                <section class="map-section">
+                    <div class="section-title">Bản đồ thời gian thực</div>
+                    <div class="map-container">
+                        <div class="map-grid"></div>
+                        
+                        <!-- Debris areas -->
+                        <div class="debris debris-1"></div>
+                        <div class="debris debris-2"></div>
+                        <div class="debris debris-3"></div>
+                        
+                        <!-- Robots -->
+                        <div class="robot robot-1"></div>
+                        <div class="robot robot-2 active"></div>
+                        <div class="robot robot-3"></div>
+                        <div class="robot robot-4"></div>
+                        
+                        <!-- Victim marker -->
+                        <div class="victim-marker"></div>
+                        
+                        <!-- Robot information -->
+                        <div class="robot-info">
+                            <div style="font-weight: bold; margin-bottom: 5px;">Robot #2</div>
+                            <div style="font-size: 12px; margin-bottom: 3px;">Vị trí: X:60%, Y:50%</div>
+                            <div style="font-size: 12px; margin-bottom: 3px;">Pin: 78%</div>
+                            <div style="font-size: 12px; margin-bottom: 3px;">Tín hiệu: 4/5</div>
+                            <div style="font-size: 12px; color: #f44336; font-weight: bold;">
+                                CẢNH BÁO: Phát hiện người
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="sensor-data">
+                    <div class="section-title">Dữ liệu cảm biến (Robot #2)</div>
+                    <div class="sensor-tabs">
+                        <div class="sensor-tab active">Camera</div>
+                        <div class="sensor-tab">Thu âm</div>
+                        <div class="sensor-tab">Nhiệt</div>
+                    </div>
+                    
+                    <div class="camera-view">
+                        <img src="./img1.JPG" alt="Camera view" style="height: 180px;width: 100%;"/>
+                    </div>
+                </section>
+                
+                <section class="alert-section">
+                    <div class="section-title">Cảnh báo</div>
+                    <div class="alerts-list">
+                        <div class="alert-item alert-critical">
+                            <div class="alert-icon">!</div>
+                            <div>
+                                <div style="font-weight: 500;">Phát hiện người sống sót</div>
+                                <div style="font-size: 12px;">Robot #2 - 30 giây trước</div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert-item alert-warning">
+                            <div class="alert-icon">!</div>
+                            <div>
+                                <div style="font-weight: 500;">Pin yếu</div>
+                                <div style="font-size: 12px;">Robot #3 - 2 phút trước</div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert-item alert-info">
+                            <div class="alert-icon">i</div>
+                            <div>
+                                <div style="font-weight: 500;">Hoàn thành quét khu vực A</div>
+                                <div style="font-size: 12px;">Robot #1 - 5 phút trước</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <a href="./control.html" class="control-btn">Điều khiển</a>
+                        <a class="control-btn">Phân tích</a>
+                        <a class="control-btn">Báo cáo</a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
