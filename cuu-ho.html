@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hệ thống mô phỏng ứng phó động đất - Mô phỏng cứu hộ</title>
+    <style>
+      :root {
+        --primary-color: #3498db;
+        --secondary-color: #e74c3c;
+        --tertiary-color: #f39c12;
+        --success-color: #2ecc71;
+        --background-color: #f5f7fa;
+        --dark-color: #2c3e50;
+        --card-bg: #ffffff;
+        --border-radius: 8px;
+        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--background-color);
+        color: var(--dark-color);
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      /* Header */
+      .header {
+        background-color: var(--dark-color);
+        color: white;
+        padding: 15px 30px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 100;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .logo i {
+        color: var(--secondary-color);
+        font-size: 22px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 20px;
+      }
+
+      .nav-link {
+        color: #ecf0f1;
+        text-decoration: none;
+        padding: 8px 15px;
+        border-radius: var(--border-radius);
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .nav-link.active {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      /* Main content */
+      .main-content {
+        flex: 1;
+        padding: 30px;
+        display: grid;
+        grid-template-columns: 300px 1fr 300px;
+        gap: 20px;
+      }
+
+      .sidebar-left {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .main-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .sidebar-right {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .card {
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 20px;
+        box-shadow: var(--box-shadow);
+      }
+
+      .card-title {
+        color: var(--dark-color);
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e1e5ea;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .card-title i {
+        color: var(--primary-color);
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        font-size: 14px;
+      }
+
+      .help-text {
+        font-size: 12px;
+        color: #7f8c8d;
+        margin-top: 5px;
+      }
+
+      .btn {
+        padding: 10px 15px;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .btn-sm {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      .btn-block {
+        width: 100%;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .btn-secondary {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+
+      .btn-tertiary {
+        background-color: var(--tertiary-color);
+        color: white;
+      }
+
+      .btn-success {
+        background-color: var(--success-color);
+        color: white;
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        border: 1px solid var(--primary-color);
+        color: var(--primary-color);
+      }
+
+      .btn:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+      }
+
+      .btn-disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-disabled:hover {
+        transform: none;
+      }
+
+      .screen-buttons {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .map-container {
+        height: 500px;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        background-color: #e9ecef;
+        position: relative;
+      }
+
+      .map-overlay {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 12px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        z-index: 10;
+        max-width: 250px;
+        font-size: 13px;
+      }
+
+      .map-controls {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        z-index: 10;
+        display: flex;
+        gap: 10px;
+      }
+
+      .map-control-btn {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: white;
+        border-radius: 50%;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .map-legend {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 10px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        z-index: 10;
+        font-size: 12px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+      }
+
+      .legend-color {
+        width: 12px;
+        height: 12px;
+        margin-right: 8px;
+        border-radius: 3px;
+      }
+
+      .robot-list {
+        margin-top: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .robot-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-radius: var(--border-radius);
+        margin-bottom: 8px;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-left: 3px solid transparent;
+      }
+
+      .robot-item:hover {
+        background-color: #e9ecef;
+      }
+
+      .robot-item.active {
+        border-left-color: var(--primary-color);
+        background-color: rgba(52, 152, 219, 0.1);
+      }
+
+      .robot-icon {
+        width: 30px;
+        height: 30px;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        font-size: 14px;
+      }
+
+      .robot-info {
+        flex: 1;
+      }
+
+      .robot-name {
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .robot-status {
+        font-size: 12px;
+        color: #7f8c8d;
+      }
+
+      .robot-battery {
+        width: 40px;
+        height: 15px;
+        background-color: #e1e5ea;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-left: 10px;
+      }
+
+      .battery-level {
+        height: 100%;
+        background-color: var(--success-color);
+      }
+
+      .victim-list {
+        margin-top: 10px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .victim-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-radius: var(--border-radius);
+        margin-bottom: 8px;
+        background-color: #f8f9fa;
+        transition: all 0.2s ease;
+        border-left: 3px solid transparent;
+      }
+
+      .victim-item:hover {
+        background-color: #e9ecef;
+      }
+
+      .victim-status {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+
+      .status-critical {
+        background-color: var(--secondary-color);
+      }
+
+      .status-stable {
+        background-color: var(--tertiary-color);
+      }
+
+      .status-rescued {
+        background-color: var(--success-color);
+      }
+
+      .victim-info {
+        flex: 1;
+      }
+
+      .victim-id {
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .victim-location {
+        font-size: 12px;
+        color: #7f8c8d;
+      }
+
+      .stats-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .stat-box {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: var(--border-radius);
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 20px;
+        font-weight: bold;
+        color: var(--dark-color);
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: #7f8c8d;
+        margin-top: 5px;
+      }
+
+      .sensor-control {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .sensor-control:last-child {
+        border-bottom: none;
+      }
+
+      .sensor-name {
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sensor-toggle {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 20px;
+      }
+
+      .sensor-toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 34px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: var(--primary-color);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(20px);
+      }
+
+      .camera-view {
+        height: 180px;
+        background-color: #000;
+        border-radius: var(--border-radius);
+        margin-top: 15px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .camera-feed {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .camera-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 10px;
+        color: white;
+        font-size: 12px;
+        text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+        pointer-events: none;
+      }
+
+      .camera-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+      }
+
+      .camera-btn {
+        width: 30px;
+        height: 30px;
+        background-color: #f8f9fa;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: none;
+      }
+
+      .camera-btn:hover {
+        background-color: #e9ecef;
+      }
+
+      .thermal-view {
+        height: 180px;
+        background-color: #000;
+        border-radius: var(--border-radius);
+        margin-top: 15px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .mission-timeline {
+        margin-top: 15px;
+      }
+
+      .timeline-item {
+        display: flex;
+        padding-left: 20px;
+        margin-bottom: 15px;
+        position: relative;
+        border-left: 2px solid #e1e5ea;
+      }
+
+      .timeline-item.active {
+        border-left-color: var(--primary-color);
+      }
+
+      .timeline-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .timeline-item:before {
+        content: "";
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #e1e5ea;
+        border-radius: 50%;
+        left: -6px;
+        top: 5px;
+      }
+
+      .timeline-item.active:before {
+        background-color: var(--primary-color);
+      }
+
+      .timeline-item.completed:before {
+        background-color: var(--success-color);
+      }
+
+      .timeline-content {
+        padding: 0 10px;
+        font-size: 13px;
+      }
+
+      .timeline-title {
+        font-weight: 500;
+        margin-bottom: 3px;
+      }
+
+      .timeline-time {
+        font-size: 11px;
+        color: #7f8c8d;
+      }
+
+      .control-panel {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .control-btn {
+        text-align: center;
+        padding: 8px;
+        background-color: #f8f9fa;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .control-btn:hover {
+        background-color: #e9ecef;
+      }
+
+      .control-btn i {
+        font-size: 18px;
+        color: var(--primary-color);
+        margin-bottom: 5px;
+      }
+
+      .control-btn-label {
+        font-size: 12px;
+      }
+
+      .movement-controls {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 5px;
+        margin-top: 15px;
+      }
+
+      .move-btn {
+        padding: 8px 0;
+        background-color: #f8f9fa;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.2s ease;
+      }
+
+      .move-btn:hover {
+        background-color: #e9ecef;
+      }
+
+      .move-btn i {
+        font-size: 16px;
+        color: var(--dark-color);
+      }
+
+      .footer {
+        background-color: var(--dark-color);
+        color: white;
+        text-align: center;
+        padding: 20px;
+        font-size: 14px;
+      }
+
+      .progress-bar {
+        height: 6px;
+        background-color: #e1e5ea;
+        border-radius: 4px;
+        margin: 8px 0;
+        overflow: hidden;
+      }
+
+      .progress {
+        height: 100%;
+        background-color: var(--success-color);
+      }
+
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid #e1e5ea;
+        margin-bottom: 15px;
+      }
+
+      .tab {
+        padding: 8px 15px;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        font-size: 14px;
+        transition: all 0.2s ease;
+      }
+
+      .tab.active {
+        border-bottom-color: var(--primary-color);
+        color: var(--primary-color);
+      }
+
+      .path-algorithms {
+        margin-top: 10px;
+      }
+
+      .algorithm-option {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .algorithm-radio {
+        margin-right: 10px;
+      }
+
+      .algorithm-label {
+        font-size: 14px;
+      }
+
+      .rescue-mission-status {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: var(--border-radius);
+        text-align: center;
+      }
+
+      .mission-status-label {
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+
+      .mission-status-value {
+        font-size: 20px;
+        font-weight: bold;
+        color: var(--tertiary-color);
+      }
+
+      /* Live Feed */
+      .live-feed {
+        margin-top: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .feed-item {
+        padding: 8px 10px;
+        border-radius: var(--border-radius);
+        margin-bottom: 8px;
+        background-color: #f8f9fa;
+        font-size: 13px;
+        border-left: 3px solid transparent;
+      }
+
+      .feed-info {
+        border-left-color: var(--primary-color);
+      }
+
+      .feed-warning {
+        border-left-color: var(--tertiary-color);
+      }
+
+      .feed-success {
+        border-left-color: var(--success-color);
+      }
+
+      .feed-error {
+        border-left-color: var(--secondary-color);
+      }
+
+      .feed-time {
+        font-size: 11px;
+        color: #7f8c8d;
+        margin-top: 3px;
+      }
+
+      /* Responsive */
+      @media (max-width: 1200px) {
+        .main-content {
+          grid-template-columns: 250px 1fr;
+          grid-template-rows: auto auto;
+          grid-template-areas:
+            "sidebar-left main-panel"
+            "sidebar-right main-panel";
+        }
+
+        .sidebar-left {
+          grid-area: sidebar-left;
+        }
+
+        .main-panel {
+          grid-area: main-panel;
+        }
+
+        .sidebar-right {
+          grid-area: sidebar-right;
+        }
+      }
+
+      @media (max-width: 992px) {
+        .main-content {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto auto auto;
+          grid-template-areas:
+            "main-panel"
+            "sidebar-left"
+            "sidebar-right";
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header class="header">
+        <div class="logo">
+          <i class="fas fa-globe-asia"></i>
+          <span>HỆ THỐNG MÔ PHỎNG ỨNG PHÓ ĐỘNG ĐẤT</span>
+        </div>
+        <div class="nav-links">
+          <a href="./index.html" class="nav-link">1. Dự báo động đất</a>
+          <a href="./mo-phong.html" class="nav-link">2. Mô phỏng thiệt hại</a>
+          <a href="#" class="nav-link active">3. Mô phỏng cứu hộ</a>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Left Sidebar - Robot Controls -->
+        <div class="sidebar-left">
+          <div class="card">
+            <h2 class="card-title">
+              <i class="fas fa-robot"></i> Đội robot cứu hộ
+            </h2>
+
+            <div class="form-group">
+              <label>Số lượng robot</label>
+              <select id="robot-count">
+                <option value="3">3 robot</option>
+                <option value="5" selected>5 robot</option>
+                <option value="10">10 robot</option>
+                <option value="custom">Tùy chỉnh...</option>
+              </select>
+            </div>
+
+            <div class="robot-list">
+              <div class="robot-item active">
+                <div class="robot-icon">R1</div>
+                <div class="robot-info">
+                  <div class="robot-name">Robot cứu hộ #1</div>
+                  <div class="robot-status">Đang hoạt động</div>
+                </div>
+                <div class="robot-battery">
+                  <div class="battery-level" style="width: 85%"></div>
+                </div>
+              </div>
+              <div class="robot-item">
+                <div class="robot-icon">R2</div>
+                <div class="robot-info">
+                  <div class="robot-name">Robot cứu hộ #2</div>
+                  <div class="robot-status">Đang di chuyển</div>
+                </div>
+                <div class="robot-battery">
+                  <div class="battery-level" style="width: 70%"></div>
+                </div>
+              </div>
+              <div class="robot-item">
+                <div class="robot-icon">R3</div>
+                <div class="robot-info">
+                  <div class="robot-name">Robot cứu hộ #3</div>
+                  <div class="robot-status">Đang tìm kiếm</div>
+                </div>
+                <div class="robot-battery">
+                  <div class="battery-level" style="width: 60%"></div>
+                </div>
+              </div>
+              <div class="robot-item">
+                <div class="robot-icon">R4</div>
+                <div class="robot-info">
+                  <div class="robot-name">Robot cứu hộ #4</div>
+                  <div class="robot-status">Đang cứu nạn nhân</div>
+                </div>
+                <div class="robot-battery">
+                  <div class="battery-level" style="width: 45%"></div>
+                </div>
+              </div>
+              <div class="robot-item">
+                <div class="robot-icon">R5</div>
+                <div class="robot-info">
+                  <div class="robot-name">Robot cứu hộ #5</div>
+                  <div class="robot-status">Đang sạc pin</div>
+                </div>
+                <div class="robot-battery">
+                  <div class="battery-level" style="width: 30%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sensor-controls" style="margin-top: 15px">
+              <h3 style="font-size: 14px; margin-bottom: 10px">
+                Cảm biến hoạt động
+              </h3>
+
+              <div class="sensor-control">
+                <div class="sensor-name">
+                  <i class="fas fa-camera"></i>
+                  <span>Camera thường</span>
+                </div>
+                <label class="sensor-toggle">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="sensor-control">
+                <div class="sensor-name">
+                  <i class="fas fa-fire"></i>
+                  <span>Camera nhiệt</span>
+                </div>
+                <label class="sensor-toggle">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="sensor-control">
+                <div class="sensor-name">
+                  <i class="fas fa-volume-up"></i>
+                  <span>Cảm biến âm thanh</span>
+                </div>
+                <label class="sensor-toggle">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="sensor-control">
+                <div class="sensor-name">
+                  <i class="fas fa-smog"></i>
+                  <span>Cảm biến khí</span>
+                </div>
+                <label class="sensor-toggle">
+                  <input type="checkbox" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="movement-controls">
+              <div class="move-btn"></div>
+              <div class="move-btn"><i class="fas fa-arrow-up"></i></div>
+              <div class="move-btn"></div>
+              <div class="move-btn"><i class="fas fa-arrow-left"></i></div>
+              <div class="move-btn"><i class="fas fa-stop"></i></div>
+              <div class="move-btn"><i class="fas fa-arrow-right"></i></div>
+              <div class="move-btn"></div>
+              <div class="move-btn"><i class="fas fa-arrow-down"></i></div>
+              <div class="move-btn"></div>
+            </div>
+
+            <div class="mission-timeline">
+              <div class="">
+                <h2 class="card-title">
+                  <i class="fas fa-rss"></i> Nhật ký hoạt động
+                </h2>
+
+                <div class="live-feed">
+                  <div class="feed-item feed-info">
+                    <div>Robot #2 đã tìm thấy nạn nhân tại tòa nhà B2</div>
+                    <div class="feed-time">14:43:12</div>
+                  </div>
+                  <div class="feed-item feed-warning">
+                    <div>Robot #5 pin yếu, đang quay về trạm sạc</div>
+                    <div class="feed-time">14:42:30</div>
+                  </div>
+                  <div class="feed-item feed-success">
+                    <div>Robot #4 đã cứu nạn nhân #003 thành công</div>
+                    <div class="feed-time">14:40:55</div>
+                  </div>
+                  <div class="feed-item feed-error">
+                    <div>Robot #3 gặp chướng ngại vật, đang tìm đường khác</div>
+                    <div class="feed-time">14:39:22</div>
+                  </div>
+                  <div class="feed-item feed-info">
+                    <div>Phát hiện tín hiệu âm thanh tại tòa nhà A1</div>
+                    <div class="feed-time">14:38:15</div>
+                  </div>
+                </div>
+
+                <button
+                  class="btn btn-block btn-outline"
+                  style="margin-top: 15px"
+                >
+                  <i class="fas fa-clipboard-list"></i> Xem tất cả nhật ký
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Main Panel - Map and Controls -->
+        <!-- Main Panel - Map and Control Area -->
+        <div class="main-panel">
+          <!-- Map Container -->
+          <div class="card" style="padding: 0; overflow: hidden">
+            <div class="map-container">
+              <!-- Google Map Placeholder -->
+              <div
+                alt="Bản đồ khu vực cứu hộ"
+                style="
+                  width: 100%;
+                  height: 100%;
+                  background-image: url('./map.svg');
+                  background-repeat: no-repeat;
+                  background-size: cover;
+                  background-position: right;
+                "
+              ></div>
+
+              <!-- Map Overlay -->
+              <div class="map-overlay">
+                <h3 style="margin-bottom: 10px; font-size: 14px">
+                  Thông tin khu vực cứu hộ
+                </h3>
+                <p><strong>Vị trí:</strong> Hà Nội, Việt Nam</p>
+                <p><strong>Cường độ động đất:</strong> 6.5 Richter</p>
+                <p><strong>Thời gian phát hiện:</strong> 14:30:22</p>
+                <p><strong>Số tòa nhà sập:</strong> 86</p>
+                <p><strong>Số nạn nhân được phát hiện:</strong> 156</p>
+                <p><strong>Số nạn nhân đã cứu:</strong> 64</p>
+                <div class="progress-bar">
+                  <div class="progress" style="width: 41%"></div>
+                </div>
+                <p style="text-align: center; font-size: 12px">
+                  Tiến trình cứu hộ: 41%
+                </p>
+              </div>
+
+              <!-- Map Controls -->
+              <div class="map-controls">
+                <div class="map-control-btn">
+                  <i class="fas fa-plus"></i>
+                </div>
+                <div class="map-control-btn">
+                  <i class="fas fa-minus"></i>
+                </div>
+                <div class="map-control-btn">
+                  <i class="fas fa-home"></i>
+                </div>
+                <div class="map-control-btn">
+                  <i class="fas fa-layer-group"></i>
+                </div>
+              </div>
+
+              <!-- Map Legend -->
+              <div class="map-legend">
+                <div class="legend-item">
+                  <div
+                    class="legend-color"
+                    style="background-color: #e74c3c"
+                  ></div>
+                  <span>Tòa nhà sập</span>
+                </div>
+                <div class="legend-item">
+                  <div
+                    class="legend-color"
+                    style="background-color: #3498db"
+                  ></div>
+                  <span>Robot cứu hộ</span>
+                </div>
+                <div class="legend-item">
+                  <div
+                    class="legend-color"
+                    style="background-color: #f39c12"
+                  ></div>
+                  <span>Nạn nhân chờ cứu hộ</span>
+                </div>
+                <div class="legend-item">
+                  <div
+                    class="legend-color"
+                    style="background-color: #2ecc71"
+                  ></div>
+                  <span>Nạn nhân đã cứu</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Path Finding Controls -->
+          <div class="card">
+            <h2 class="card-title">
+              <i class="fas fa-route"></i> Điều khiển tìm đường
+            </h2>
+
+            <div class="tabs">
+              <div class="tab active">Thuật toán tìm đường</div>
+              <div class="tab">Vật cản</div>
+              <div class="tab">Tự động hóa</div>
+            </div>
+
+            <div class="path-algorithms">
+              <div class="algorithm-option">
+                <input
+                  type="radio"
+                  name="algorithm"
+                  id="dijkstra"
+                  class="algorithm-radio"
+                  checked
+                />
+                <label for="dijkstra" class="algorithm-label"
+                  >Dijkstra (ngắn nhất)</label
+                >
+              </div>
+              <div class="algorithm-option">
+                <input
+                  type="radio"
+                  name="algorithm"
+                  id="astar"
+                  class="algorithm-radio"
+                />
+                <label for="astar" class="algorithm-label"
+                  >A* (tối ưu hóa với heuristic)</label
+                >
+              </div>
+              <div class="algorithm-option">
+                <input
+                  type="radio"
+                  name="algorithm"
+                  id="rrt"
+                  class="algorithm-radio"
+                />
+                <label for="rrt" class="algorithm-label"
+                  >RRT (Rapidly-exploring Random Tree)</label
+                >
+              </div>
+              <div class="algorithm-option">
+                <input
+                  type="radio"
+                  name="algorithm"
+                  id="custom"
+                  class="algorithm-radio"
+                />
+                <label for="custom" class="algorithm-label"
+                  >Thuật toán tùy chỉnh</label
+                >
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 15px">
+              <button class="btn btn-primary" style="flex: 1">
+                <i class="fas fa-play"></i> Tìm đường
+              </button>
+              <button class="btn btn-secondary" style="flex: 1">
+                <i class="fas fa-redo"></i> Đặt lại
+              </button>
+            </div>
+
+            <div class="rescue-mission-status">
+              <div class="mission-status-label">Trạng thái nhiệm vụ cứu hộ</div>
+              <div class="mission-status-value">Đang tiến hành</div>
+            </div>
+
+            <div class="screen-buttons">
+              <button class="btn btn-secondary" id="back-btn">
+                <i class="fas fa-arrow-left"></i> Quay lại mô phỏng thiệt hại
+              </button>
+              <button class="btn btn-success">
+                <i class="fas fa-file-export"></i> Xuất báo cáo
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Sidebar - Victim Info & Camera Feed -->
+        <div class="sidebar-right">
+          <!-- Victim List -->
+          <div class="card">
+            <h2 class="card-title">
+              <i class="fas fa-user-injured"></i> Danh sách nạn nhân
+            </h2>
+
+            <div class="stats-container">
+              <div class="stat-box">
+                <div class="stat-value">156</div>
+                <div class="stat-label">Tổng số nạn nhân</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-value">64</div>
+                <div class="stat-label">Đã cứu thành công</div>
+              </div>
+            </div>
+
+            <div class="victim-list">
+              <div class="victim-item">
+                <div class="victim-status status-critical"></div>
+                <div class="victim-info">
+                  <div class="victim-id">Nạn nhân #001</div>
+                  <div class="victim-location">Tòa nhà A1, Tầng 3</div>
+                </div>
+                <button class="btn btn-sm btn-primary">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+              <div class="victim-item">
+                <div class="victim-status status-stable"></div>
+                <div class="victim-info">
+                  <div class="victim-id">Nạn nhân #002</div>
+                  <div class="victim-location">Tòa nhà B2, Tầng 1</div>
+                </div>
+                <button class="btn btn-sm btn-primary">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+              <div class="victim-item">
+                <div class="victim-status status-rescued"></div>
+                <div class="victim-info">
+                  <div class="victim-id">Nạn nhân #003</div>
+                  <div class="victim-location">Tòa nhà C4, Tầng 2</div>
+                </div>
+                <button class="btn btn-sm btn-primary">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+              <div class="victim-item">
+                <div class="victim-status status-critical"></div>
+                <div class="victim-info">
+                  <div class="victim-id">Nạn nhân #004</div>
+                  <div class="victim-location">Tòa nhà D3, Tầng 5</div>
+                </div>
+                <button class="btn btn-sm btn-primary">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+              <div class="victim-item">
+                <div class="victim-status status-stable"></div>
+                <div class="victim-info">
+                  <div class="victim-id">Nạn nhân #005</div>
+                  <div class="victim-location">Tòa nhà A2, Tầng 4</div>
+                </div>
+                <button class="btn btn-sm btn-primary">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+              <div class="victim-item">
+                <div class="victim-status status-rescued"></div>
+                <div class="victim-info">
+                  <div class="victim-id">Nạn nhân #006</div>
+                  <div class="victim-location">Tòa nhà B1, Tầng 2</div>
+                </div>
+                <button class="btn btn-sm btn-primary">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+
+            <button class="btn btn-block btn-tertiary" style="margin-top: 15px">
+              <i class="fas fa-filter"></i> Lọc danh sách
+            </button>
+          </div>
+
+          <!-- Camera Feed -->
+          <div class="card">
+            <h2 class="card-title">
+              <i class="fas fa-camera"></i> Camera trực tiếp
+            </h2>
+
+            <div class="camera-view">
+              <img
+                src="/api/placeholder/300/180"
+                alt="Camera Feed"
+                class="camera-feed"
+              />
+              <div class="camera-overlay">
+                <div style="display: flex; justify-content: space-between">
+                  <span>Robot #1</span>
+                  <span>14:45:33</span>
+                </div>
+                <div style="display: flex; justify-content: space-between">
+                  <span>Pin: 85%</span>
+                  <span>Camera thường</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="camera-controls">
+              <button class="camera-btn"><i class="fas fa-sync"></i></button>
+              <button class="camera-btn">
+                <i class="fas fa-record-vinyl"></i>
+              </button>
+              <button class="camera-btn"><i class="fas fa-camera"></i></button>
+              <button class="camera-btn"><i class="fas fa-expand"></i></button>
+            </div>
+
+            <div class="thermal-view">
+              <img
+                src="/api/placeholder/300/180"
+                alt="Thermal Camera"
+                class="camera-feed"
+                style="filter: hue-rotate(180deg) saturate(200%)"
+              />
+              <div class="camera-overlay">
+                <div style="display: flex; justify-content: space-between">
+                  <span>Robot #1</span>
+                  <span>14:45:33</span>
+                </div>
+                <div style="display: flex; justify-content: space-between">
+                  <span>T: 28.3°C</span>
+                  <span>Camera nhiệt</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Feed -->
+        </div>
+      </div>
+      <footer class="footer">
+        &copy; 2025 Hệ thống mô phỏng ứng phó động đất | Phát triển bởi AI Team
+      </footer>
+    </div>
+
+    <script>
+      document
+        .getElementById("back-btn")
+        .addEventListener("click", function () {
+          window.location.href = "./mo-phong.html";
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,165 @@
+<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Nền bản đồ -->
+  <rect x="0" y="0" width="800" height="500" fill="#f5f7fa"/>
+  
+  <!-- Đường phố -->
+  <path d="M 50 100 L 750 100" stroke="#d1d8e0" stroke-width="15" />
+  <path d="M 50 200 L 750 200" stroke="#d1d8e0" stroke-width="15" />
+  <path d="M 50 300 L 750 300" stroke="#d1d8e0" stroke-width="15" />
+  <path d="M 50 400 L 750 400" stroke="#d1d8e0" stroke-width="15" />
+  
+  <path d="M 150 50 L 150 450" stroke="#d1d8e0" stroke-width="15" />
+  <path d="M 250 50 L 250 450" stroke="#d1d8e0" stroke-width="15" />
+  <path d="M 350 50 L 350 450" stroke="#d1d8e0" stroke-width="15" />
+  <path d="M 450 50 L 450 450" stroke="#d1d8e0" stroke-width="15" />
+  <path d="M 550 50 L 550 450" stroke="#d1d8e0" stroke-width="15" />
+  <path d="M 650 50 L 650 450" stroke="#d1d8e0" stroke-width="15" />
+  
+  <!-- Tòa nhà không bị sập -->
+  <rect x="170" y="120" width="60" height="60" fill="#a5b1c2" />
+  <rect x="470" y="120" width="60" height="60" fill="#a5b1c2" />
+  <rect x="570" y="120" width="60" height="60" fill="#a5b1c2" />
+  <rect x="670" y="120" width="60" height="60" fill="#a5b1c2" />
+  
+  <rect x="170" y="220" width="60" height="60" fill="#a5b1c2" />
+  <rect x="570" y="220" width="60" height="60" fill="#a5b1c2" />
+  <rect x="670" y="220" width="60" height="60" fill="#a5b1c2" />
+  
+  <rect x="170" y="320" width="60" height="60" fill="#a5b1c2" />
+  <rect x="570" y="320" width="60" height="60" fill="#a5b1c2" />
+  <rect x="670" y="320" width="60" height="60" fill="#a5b1c2" />
+  
+  <!-- Tòa nhà bị sập (vẽ hình nền đổ nát) -->
+  <g id="collapsed-building-1" transform="translate(270, 120)">
+    <rect x="0" y="0" width="60" height="60" fill="#e74c3c" opacity="0.3" />
+    <line x1="0" y1="0" x2="60" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <line x1="60" y1="0" x2="0" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <path d="M 10 15 L 20 5 L 30 20 L 45 10 L 50 25 L 40 40 L 50 50 L 30 55 L 15 45 L 5 55 Z" fill="#e74c3c" opacity="0.5" />
+  </g>
+  
+  <g id="collapsed-building-2" transform="translate(370, 120)">
+    <rect x="0" y="0" width="60" height="60" fill="#e74c3c" opacity="0.3" />
+    <line x1="0" y1="0" x2="60" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <line x1="60" y1="0" x2="0" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <path d="M 10 15 L 20 5 L 30 20 L 45 10 L 50 25 L 40 40 L 50 50 L 30 55 L 15 45 L 5 55 Z" fill="#e74c3c" opacity="0.5" />
+  </g>
+  
+  <g id="collapsed-building-3" transform="translate(270, 220)">
+    <rect x="0" y="0" width="60" height="60" fill="#e74c3c" opacity="0.3" />
+    <line x1="0" y1="0" x2="60" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <line x1="60" y1="0" x2="0" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <path d="M 10 15 L 20 5 L 30 20 L 45 10 L 50 25 L 40 40 L 50 50 L 30 55 L 15 45 L 5 55 Z" fill="#e74c3c" opacity="0.5" />
+  </g>
+  
+  <g id="collapsed-building-4" transform="translate(370, 220)">
+    <rect x="0" y="0" width="60" height="60" fill="#e74c3c" opacity="0.3" />
+    <line x1="0" y1="0" x2="60" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <line x1="60" y1="0" x2="0" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <path d="M 10 15 L 20 5 L 30 20 L 45 10 L 50 25 L 40 40 L 50 50 L 30 55 L 15 45 L 5 55 Z" fill="#e74c3c" opacity="0.5" />
+  </g>
+  
+  <g id="collapsed-building-5" transform="translate(470, 220)">
+    <rect x="0" y="0" width="60" height="60" fill="#e74c3c" opacity="0.3" />
+    <line x1="0" y1="0" x2="60" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <line x1="60" y1="0" x2="0" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <path d="M 10 15 L 20 5 L 30 20 L 45 10 L 50 25 L 40 40 L 50 50 L 30 55 L 15 45 L 5 55 Z" fill="#e74c3c" opacity="0.5" />
+  </g>
+  
+  <g id="collapsed-building-6" transform="translate(270, 320)">
+    <rect x="0" y="0" width="60" height="60" fill="#e74c3c" opacity="0.3" />
+    <line x1="0" y1="0" x2="60" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <line x1="60" y1="0" x2="0" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <path d="M 10 15 L 20 5 L 30 20 L 45 10 L 50 25 L 40 40 L 50 50 L 30 55 L 15 45 L 5 55 Z" fill="#e74c3c" opacity="0.5" />
+  </g>
+  
+  <g id="collapsed-building-7" transform="translate(370, 320)">
+    <rect x="0" y="0" width="60" height="60" fill="#e74c3c" opacity="0.3" />
+    <line x1="0" y1="0" x2="60" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <line x1="60" y1="0" x2="0" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <path d="M 10 15 L 20 5 L 30 20 L 45 10 L 50 25 L 40 40 L 50 50 L 30 55 L 15 45 L 5 55 Z" fill="#e74c3c" opacity="0.5" />
+  </g>
+  
+  <g id="collapsed-building-8" transform="translate(470, 320)">
+    <rect x="0" y="0" width="60" height="60" fill="#e74c3c" opacity="0.3" />
+    <line x1="0" y1="0" x2="60" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <line x1="60" y1="0" x2="0" y2="60" stroke="#e74c3c" stroke-width="2" />
+    <path d="M 10 15 L 20 5 L 30 20 L 45 10 L 50 25 L 40 40 L 50 50 L 30 55 L 15 45 L 5 55 Z" fill="#e74c3c" opacity="0.5" />
+  </g>
+  
+  <!-- Vị trí nạn nhân (chấm đỏ) -->
+  <circle cx="285" cy="135" r="6" fill="#e74c3c" />
+  <circle cx="315" cy="155" r="6" fill="#e74c3c" />
+  <circle cx="290" cy="175" r="6" fill="#e74c3c" />
+  
+  <circle cx="390" cy="135" r="6" fill="#e74c3c" />
+  <circle cx="410" cy="140" r="6" fill="#e74c3c" />
+  <circle cx="395" cy="165" r="6" fill="#e74c3c" />
+  
+  <circle cx="280" cy="235" r="6" fill="#e74c3c" />
+  <circle cx="315" cy="245" r="6" fill="#e74c3c" />
+  <circle cx="295" cy="275" r="6" fill="#e74c3c" />
+  
+  <circle cx="380" cy="235" r="6" fill="#e74c3c" />
+  <circle cx="420" cy="250" r="6" fill="#e74c3c" />
+  <circle cx="390" cy="270" r="6" fill="#e74c3c" />
+  
+  <circle cx="495" cy="245" r="6" fill="#e74c3c" />
+  <circle cx="510" cy="265" r="6" fill="#e74c3c" />
+  
+  <circle cx="280" cy="335" r="6" fill="#e74c3c" />
+  <circle cx="310" cy="350" r="6" fill="#e74c3c" />
+  <circle cx="295" cy="370" r="6" fill="#e74c3c" />
+  
+  <circle cx="385" cy="340" r="6" fill="#e74c3c" />
+  <circle cx="415" cy="365" r="6" fill="#e74c3c" />
+  
+  <circle cx="480" cy="335" r="6" fill="#e74c3c" />
+  <circle cx="495" cy="365" r="6" fill="#e74c3c" />
+  <circle cx="515" cy="350" r="6" fill="#e74c3c" />
+  
+  <!-- Vị trí robot (chấm xanh) -->
+  <g id="robot-1">
+    <circle cx="250" cy="100" r="8" fill="#3498db" />
+    <text x="250" y="100" text-anchor="middle" dy="3" fill="white" font-family="Arial" font-size="9" font-weight="bold">R1</text>
+  </g>
+  
+  <g id="robot-2">
+    <circle cx="350" cy="100" r="8" fill="#3498db" />
+    <text x="350" y="100" text-anchor="middle" dy="3" fill="white" font-family="Arial" font-size="9" font-weight="bold">R2</text>
+  </g>
+  
+  <g id="robot-3">
+    <circle cx="285" cy="215" r="8" fill="#3498db" />
+    <text x="285" y="215" text-anchor="middle" dy="3" fill="white" font-family="Arial" font-size="9" font-weight="bold">R3</text>
+  </g>
+  
+  <g id="robot-4">
+    <circle cx="500" cy="230" r="8" fill="#3498db" />
+    <text x="500" y="230" text-anchor="middle" dy="3" fill="white" font-family="Arial" font-size="9" font-weight="bold">R4</text>
+  </g>
+  
+  <g id="robot-5">
+    <circle cx="380" cy="300" r="8" fill="#3498db" />
+    <text x="380" y="300" text-anchor="middle" dy="3" fill="white" font-family="Arial" font-size="9" font-weight="bold">R5</text>
+  </g>
+  
+  <!-- Đường tìm kiếm của robot -->
+  <path d="M 250 100 L 265 125 L 285 135" stroke="#3498db" stroke-width="2" stroke-dasharray="5,3" fill="none" />
+  <path d="M 350 100 L 370 115 L 390 135" stroke="#3498db" stroke-width="2" stroke-dasharray="5,3" fill="none" />
+  <path d="M 285 215 L 290 230 L 295 250 L 315 245" stroke="#3498db" stroke-width="2" stroke-dasharray="5,3" fill="none" />
+  <path d="M 500 230 L 505 240 L 510 265" stroke="#3498db" stroke-width="2" stroke-dasharray="5,3" fill="none" />
+  <path d="M 380 300 L 385 320 L 385 340" stroke="#3498db" stroke-width="2" stroke-dasharray="5,3" fill="none" />
+  
+  <!-- Nạn nhân đã được cứu (chấm xanh lá) -->
+  <circle cx="310" cy="130" r="6" fill="#2ecc71" />
+  <circle cx="430" cy="245" r="6" fill="#2ecc71" />
+  <circle cx="300" cy="350" r="6" fill="#2ecc71" />
+  <circle cx="400" cy="350" r="6" fill="#2ecc71" />
+  
+  
+  <!-- Vòng tròn tâm chấn -->
+  <circle cx="400" cy="250" r="80" fill="none" stroke="#e74c3c" stroke-width="2" stroke-dasharray="8,4" />
+  <circle cx="400" cy="250" r="150" fill="none" stroke="#e74c3c" stroke-width="1" stroke-dasharray="8,4" />
+  <circle cx="400" cy="250" r="4" fill="#e74c3c" />
+  <text x="408" y="250" font-family="Arial" font-size="10" fill="#e74c3c">Tâm chấn</text>
+</svg>
